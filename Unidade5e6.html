@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Painel Inteligente</title>
+
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial;
+            background-color: #f4f4f4;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input {
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h1>Painel de Clima</h1>
+
+    <p id="clima">Clique para ver o clima</p>
+    <button id="btnClima">Buscar clima</button>
+
+    <hr>
+
+    <h2>Bot</h2>
+
+    <input id="inputMsg" placeholder="Digite algo (ex: clima)">
+    <p id="resposta"></p>
+
+    <script>
+        // ================================
+        // DASHBOARD (API)
+        // ================================
+
+        async function buscarClima() {
+
+            const resposta = await fetch(
+                "https://api.open-meteo.com/v1/forecast?latitude=-25.43&longitude=-49.27&current=temperature_2m"
+            );
+
+            const dados = await resposta.json();
+
+            const temperatura = dados.current.temperature_2m;
+
+            document.getElementById("clima").textContent =
+                "Temperatura: " + temperatura + "°C";
+
+            // Extra: muda cor conforme temperatura
+            if (temperatura > 25) {
+                document.body.style.backgroundColor = "#ffb347";
+            } else {
+                document.body.style.backgroundColor = "#87ceeb";
+            }
+        }
+
+        document.getElementById("btnClima")
+            .addEventListener("click", buscarClima);
+
+
+        // ================================
+        // BOT
+        // ================================
+
+        document.getElementById("inputMsg")
+            .addEventListener("input", async (e) => {
+
+            const texto = e.target.value.toLowerCase();
+
+            if (texto.includes("clima")) {
+
+                const resposta = await fetch(
+                    "https://api.open-meteo.com/v1/forecast?latitude=-25.43&longitude=-49.27&current=temperature_2m"
+                );
+
+                const dados = await resposta.json();
+
+                document.getElementById("resposta").textContent =
+                    "Temperatura atual: " + dados.current.temperature_2m + "°C";
+
+            } else {
+                document.getElementById("resposta").textContent =
+                    "Pergunte sobre o clima!";
+            }
+        });
+
+    </script>
+
+</body>
+</html>
